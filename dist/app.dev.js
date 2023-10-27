@@ -6,8 +6,14 @@ var express = require("express");
 
 var bodyParser = require("body-parser");
 
+var expressHbs = require("express-handlebars");
+
 var app = express();
-app.set('view engine', 'pug');
+app.engine('handlebars', expressHbs({
+  layoutsDir: 'views/layouts',
+  defaultLayout: 'main-layout'
+}));
+app.set('view engine', 'handlebars');
 app.set('views', 'views');
 
 var adminData = require("./routes/admin");
