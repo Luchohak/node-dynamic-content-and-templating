@@ -13,7 +13,7 @@ app.engine('handlebars', expressHbs({
   layoutsDir: 'views/layouts',
   defaultLayout: 'main-layout'
 }));
-app.set('view engine', 'handlebars');
+app.set('view engine', 'ejs');
 app.set('views', 'views');
 
 var adminData = require("./routes/admin");
