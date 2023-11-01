@@ -1,27 +1,11 @@
 "use strict";
 
-var path = require("path");
-
 var express = require("express");
 
-var rootDir = require("../util/path");
-
 var router = express.Router();
-var products = [];
-router.get("/add-product", function (req, res, next) {
-  res.render("add-product", {
-    pageTitle: "Add Product",
-    path: "/admin/add-product",
-    activeAddProduct: true,
-    productCSS: true,
-    formsCSS: true
-  });
-});
-router.post("/add-product", function (req, res, next) {
-  products.push({
-    title: req.body.title
-  });
-  res.redirect("/");
-});
-exports.routes = router;
-exports.products = products;
+
+var productsController = require('../controllers/products');
+
+router.get("/add-product", productsController.getAddProduct);
+router.post("/add-product", productsController.postAddProduct);
+module.exports = router;
