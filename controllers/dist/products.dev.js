@@ -1,6 +1,6 @@
 "use strict";
 
-var products = [];
+var Product = require("../models/product");
 
 exports.getAddProduct = function (req, res, next) {
   res.render("add-product", {
@@ -13,13 +13,13 @@ exports.getAddProduct = function (req, res, next) {
 };
 
 exports.postAddProduct = function (req, res, next) {
-  products.push({
-    title: req.body.title
-  });
+  var product = new Product(req.body.title);
+  product.save();
   res.redirect("/");
 };
 
 exports.getShop = function (req, res, next) {
+  var products = Product.fetchAll();
   res.render("shop", {
     prods: products,
     pageTitle: "Shop",
