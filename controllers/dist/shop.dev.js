@@ -28,10 +28,38 @@ exports.getProducts = function (req, res, next) {
   });
 };
 
+exports.getProduct = function (req, res, next) {
+  var prodId = req.params.productId;
+  Product.findById(prodId, function (product) {
+    console.log(product);
+    res.render("shop/product-detail", {
+      pageTitle: product.title,
+      path: "/products",
+      product: product
+    });
+  });
+};
+
 exports.getCart = function (req, res, next) {
   res.render("shop/cart", {
     pageTitle: "Cart",
     path: "/cart"
+  });
+};
+
+exports.postCart = function (req, res, next) {
+  var prodId = req.body.productId;
+  console.log(prodId);
+  res.render("shop/cart", {
+    pageTitle: "Cart",
+    path: '/cart'
+  });
+};
+
+exports.getOrders = function (req, res, next) {
+  res.render("shop/orders", {
+    pageTitle: "Orders",
+    path: "/orders"
   });
 };
 

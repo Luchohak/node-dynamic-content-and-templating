@@ -39,6 +39,7 @@ function () {
     value: function save() {
       var _this = this;
 
+      this.id = Math.random().toString();
       getProductsFromFile(function (products) {
         products.push(_this);
         fs.writeFile(p, JSON.stringify(products), function (err) {
@@ -50,6 +51,16 @@ function () {
     key: "fetchAll",
     value: function fetchAll(cb) {
       getProductsFromFile(cb);
+    }
+  }, {
+    key: "findById",
+    value: function findById(id, cb) {
+      getProductsFromFile(function (products) {
+        var product = products.find(function (prod) {
+          return prod.id === id;
+        });
+        cb(product);
+      });
     }
   }]);
 
