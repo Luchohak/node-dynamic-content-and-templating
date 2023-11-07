@@ -11,7 +11,11 @@ exports.getAddProduct = function (req, res, next) {
 };
 
 exports.postAddProduct = function (req, res, next) {
-  var product = new Product(req.body.title);
+  var title = req.body.title;
+  var imageUrl = req.body.imageUrl;
+  var price = req.body.price;
+  var description = req.body.description;
+  var product = new Product(title, imageUrl, description, price);
   product.save();
   res.redirect("/");
 };
@@ -25,9 +29,12 @@ exports.getEditProduct = function (req, res, next) {
 };
 
 exports.getProducts = function (req, res, next) {
-  res.render("admin/products", {
-    pageTitle: "Admin Products",
-    path: "/admin/products",
-    activeAdminProducts: true
+  Product.fetchAll(function (products) {
+    res.render("admin/products", {
+      pageTitle: "Admin Products",
+      path: "/admin/products",
+      prods: products,
+      activeAdminProducts: true
+    });
   });
 };
