@@ -1,36 +1,35 @@
-"use strict";
+const Product = require("../models/product");
 
-var Product = require("../models/product");
 
-exports.getShop = function (req, res, next) {
-  Product.fetchAll(function (products) {
+exports.getShop = (req, res, next) => {
+  Product.fetchAll((products) => {
     res.render("shop/index", {
       prods: products,
       pageTitle: "Shop",
       path: "/",
       hasProducts: products.length > 0,
       activeShop: true,
-      productCSS: true
+      productCSS: true,
     });
   });
 };
 
-exports.getProducts = function (req, res, next) {
-  Product.fetchAll(function (products) {
+exports.getProducts = (req, res, next) => {
+  Product.fetchAll((products) => {
     res.render("shop/product-list", {
       prods: products,
       pageTitle: "Products",
       path: "/products",
       hasProducts: products.length > 0,
       activeShop: true,
-      productCSS: true
+      productCSS: true,
     });
   });
 };
 
-exports.getCart = function (req, res, next) {
+exports.getCart = (req, res, next) => {
   res.render("shop/cart", {
     pageTitle: "Cart",
-    path: "/cart"
+    path: "/cart",
   });
 };
