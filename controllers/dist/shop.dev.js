@@ -2,6 +2,8 @@
 
 var Product = require("../models/product");
 
+var Cart = require("../models/cart");
+
 exports.getIndex = function (req, res, next) {
   Product.fetchAll(function (products) {
     res.render("shop/index", {
@@ -49,10 +51,12 @@ exports.getCart = function (req, res, next) {
 
 exports.postCart = function (req, res, next) {
   var prodId = req.body.productId;
-  console.log(prodId);
+  Product.findById(prodId, function (product) {
+    Cart.addProduct(prodId, product.price);
+  });
   res.render("shop/cart", {
     pageTitle: "Cart",
-    path: '/cart'
+    path: "/cart"
   });
 };
 
