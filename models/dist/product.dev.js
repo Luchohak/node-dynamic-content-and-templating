@@ -18,6 +18,8 @@ var fs = require("fs");
 
 var path = require("path");
 
+var Cart = require('./cart');
+
 var p = path.join(path.dirname(require.main.filename), "data", "products.json");
 
 getProductsFromFile = function getProductsFromFile(cb) {
@@ -73,11 +75,16 @@ function () {
     key: "deleteById",
     value: function deleteById(id) {
       getProductsFromFile(function (products) {
+        var product = products.find(function (prod) {
+          return prod.id === id;
+        });
         var updatedProducts = products.filter(function (prod) {
           return prod.id !== id;
         });
         fs.write(p, JSON.stringify(updatedProducts), function (err) {
-          if (!err) {}
+          if (!err) {
+            Cart.deleteProduct(id, product.price);
+          }
         });
       });
     }
