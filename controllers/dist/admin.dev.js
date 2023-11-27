@@ -15,7 +15,7 @@ exports.postAddProduct = function (req, res, next) {
   var imageUrl = req.body.imageUrl;
   var price = req.body.price;
   var description = req.body.description;
-  var product = new Product(title, imageUrl, description, price);
+  var product = new Product(null, title, imageUrl, description, price);
   product.save();
   res.redirect("/");
 };
@@ -30,7 +30,7 @@ exports.getEditProduct = function (req, res, next) {
   var prodId = req.params.productId;
   Product.findById(prodId, function (product) {
     if (!product) {
-      return res.redirect('/');
+      return res.redirect("/");
     }
 
     res.render("admin/edit-product", {
@@ -42,6 +42,17 @@ exports.getEditProduct = function (req, res, next) {
   });
 };
 
+exports.postEditProduct = function (req, res, next) {
+  var prodId = req.body.productId;
+  var updatedTitle = req.body.title;
+  var updatedPrice = req.body.price;
+  var updatedImageUrl = req.body.imageUrl;
+  var updatedDescription = req.body.description;
+  var updatedProduct = new Product(prodId, updatedTitle, updatedImageUrl, updatedDescription, updatedPrice);
+  updatedProduct.save();
+  res.redirect('/admin/products');
+};
+
 exports.getProducts = function (req, res, next) {
   Product.fetchAll(function (products) {
     res.render("admin/products", {
@@ -51,4 +62,8 @@ exports.getProducts = function (req, res, next) {
       activeAdminProducts: true
     });
   });
+};
+
+exports.postDeleteProduct = function (req, res, next) {
+  var prodId = req.body.productId;
 };
