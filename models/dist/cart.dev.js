@@ -87,6 +87,11 @@ function () {
         var product = updatedCart.products.find(function (prod) {
           return prod.id === id;
         });
+
+        if (!product) {
+          return;
+        }
+
         var productQty = product.qty;
         updatedCart.products = updatedCart.products.filter(function (prod) {
           return prod.id !== id;
@@ -95,6 +100,19 @@ function () {
         fs.writeFile(p, JSON.stringify(updatedCart), function (err) {
           console.log(err);
         });
+      });
+    }
+  }, {
+    key: "getCart",
+    value: function getCart(cb) {
+      fs.readFile(p, function (err, fileContent) {
+        var cart = JSON.parse(fileContent);
+
+        if (err) {
+          cb(null);
+        } else {
+          cb(cart);
+        }
       });
     }
   }]);

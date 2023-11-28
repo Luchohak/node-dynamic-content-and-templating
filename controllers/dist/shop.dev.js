@@ -43,9 +43,48 @@ exports.getProduct = function (req, res, next) {
 };
 
 exports.getCart = function (req, res, next) {
-  res.render("shop/cart", {
-    pageTitle: "Cart",
-    path: "/cart"
+  Cart.getCart(function (cart) {
+    Product.fetchAll(function (products) {
+      var cartProducts = [];
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
+
+      try {
+        for (var _iterator = products[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          product = _step.value;
+          var cartProductData = cart.products.find(function (prod) {
+            return prod.id === product.id;
+          });
+
+          if (cartProductData) {
+            cartProducts.push({
+              productData: product,
+              qty: cartProductData.qty
+            });
+          }
+        }
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator["return"] != null) {
+            _iterator["return"]();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
+        }
+      }
+
+      res.render("shop/cart", {
+        pageTitle: "Cart",
+        path: "/cart",
+        products: cartProducts
+      });
+    });
   });
 };
 
@@ -57,6 +96,14 @@ exports.postCart = function (req, res, next) {
   res.render("shop/cart", {
     pageTitle: "Cart",
     path: "/cart"
+  });
+};
+
+exports.postCartDeleteProduct = function (req, res, next) {
+  var prodId = req.body.productId;
+  Product.findById(prodId, function (product) {
+    Cart.deleteProduct(prodId, product.price);
+    res.redirect("/cart");
   });
 };
 
