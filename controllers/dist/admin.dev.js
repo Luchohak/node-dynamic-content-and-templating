@@ -16,8 +16,11 @@ exports.postAddProduct = function (req, res, next) {
   var price = req.body.price;
   var description = req.body.description;
   var product = new Product(null, title, imageUrl, description, price);
-  product.save();
-  res.redirect("/");
+  product.save().then(function () {
+    res.redirect("/");
+  })["catch"](function (err) {
+    return console.log(err);
+  });
 };
 
 exports.getEditProduct = function (req, res, next) {
@@ -50,7 +53,7 @@ exports.postEditProduct = function (req, res, next) {
   var updatedDescription = req.body.description;
   var updatedProduct = new Product(prodId, updatedTitle, updatedImageUrl, updatedDescription, updatedPrice);
   updatedProduct.save();
-  res.redirect('/admin/products');
+  res.redirect("/admin/products");
 };
 
 exports.getProducts = function (req, res, next) {
@@ -67,5 +70,5 @@ exports.getProducts = function (req, res, next) {
 exports.postDeleteProduct = function (req, res, next) {
   var prodId = req.body.productId;
   Product.deleteById(prodId);
-  res.redirect('/admin/products');
+  res.redirect("/admin/products");
 };
