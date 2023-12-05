@@ -46,13 +46,17 @@ exports.getProducts = function (req, res, next) {
 
 exports.getProduct = function (req, res, next) {
   var prodId = req.params.productId;
-  Product.findById(prodId, function (product) {
-    console.log(product);
+  Product.findById(prodId).then(function (_ref5) {
+    var _ref6 = _slicedToArray(_ref5, 1),
+        product = _ref6[0];
+
     res.render("shop/product-detail", {
       pageTitle: product.title,
       path: "/products",
-      product: product
+      product: product[0]
     });
+  })["catch"](function (err) {
+    console.log(err);
   });
 };
 

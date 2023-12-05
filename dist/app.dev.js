@@ -22,7 +22,7 @@ var shopRoutes = require("./routes/shop");
 
 var errorController = require("./controllers/error");
 
-var db = require("./util/database");
+var sequelize = require("./util/database");
 
 app.use(bodyParser.urlencoded({
   extended: false
@@ -31,4 +31,9 @@ app.use(express["static"](path.join(__dirname, "public")));
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
 app.use(errorController.get404);
-app.listen(3000);
+sequelize.sync().then(function (result) {
+  //console.log(result);
+  app.listen(3000);
+})["catch"](function (err) {
+  console.log(err);
+});

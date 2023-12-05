@@ -15,11 +15,15 @@ exports.postAddProduct = function (req, res, next) {
   var imageUrl = req.body.imageUrl;
   var price = req.body.price;
   var description = req.body.description;
-  var product = new Product(null, title, imageUrl, description, price);
-  product.save().then(function () {
-    res.redirect("/");
+  Product.create({
+    title: title,
+    imageUrl: imageUrl,
+    price: price,
+    description: description
+  }).then(function (result) {
+    console.log(result);
   })["catch"](function (err) {
-    return console.log(err);
+    console.log(err);
   });
 };
 

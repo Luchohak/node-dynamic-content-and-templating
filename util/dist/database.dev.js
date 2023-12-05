@@ -1,11 +1,9 @@
 "use strict";
 
-var mysql = require('mysql2');
+var Sequelize = require("sequelize");
 
-var pool = mysql.createPool({
-  host: 'localhost',
-  user: 'root',
-  database: 'node-complete',
-  password: 'simonsimon'
+var sequelize = new Sequelize("node-complete", "root", "simonsimon", {
+  dialect: "mysql",
+  host: "localhost"
 });
-module.exports = pool.promise();
+module.exports = sequelize;
