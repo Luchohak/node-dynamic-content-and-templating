@@ -1,25 +1,13 @@
 "use strict";
 
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
-
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
-
-function _iterableToArrayLimit(arr, i) { if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === "[object Arguments]")) { return; } var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
-
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-
 var Product = require("../models/product");
 
 var Cart = require("../models/cart");
 
 exports.getIndex = function (req, res, next) {
-  Product.fetchAll().then(function (_ref) {
-    var _ref2 = _slicedToArray(_ref, 2),
-        rows = _ref2[0],
-        fieldData = _ref2[1];
-
+  Product.findAll().then(function (products) {
     res.render("shop/index", {
-      prods: rows,
+      prods: products,
       pageTitle: "Shop",
       path: "/"
     });
@@ -29,13 +17,9 @@ exports.getIndex = function (req, res, next) {
 };
 
 exports.getProducts = function (req, res, next) {
-  Product.fetchAll().then(function (_ref3) {
-    var _ref4 = _slicedToArray(_ref3, 2),
-        rows = _ref4[0],
-        fieldData = _ref4[1];
-
+  Product.findAll().then(function (products) {
     res.render("shop/product-list", {
-      prods: rows,
+      prods: products,
       pageTitle: "Products",
       path: "/products"
     });
@@ -45,15 +29,19 @@ exports.getProducts = function (req, res, next) {
 };
 
 exports.getProduct = function (req, res, next) {
-  var prodId = req.params.productId;
-  Product.findById(prodId).then(function (_ref5) {
-    var _ref6 = _slicedToArray(_ref5, 1),
-        product = _ref6[0];
+  var prodId = req.params.productId; // Product.findAll({ where: { id: prodId } }).then(products => {
+  //   res.render("shop/product-detail", {
+  //     pageTitle: products[0].title,
+  //     path: "/products",
+  //     product: products[0],
+  //   });
+  // }).catch(err => {console.log(err)});
 
+  Product.findByPk(prodId).then(function (product) {
     res.render("shop/product-detail", {
-      pageTitle: product.title,
+      pageTitle: product,
       path: "/products",
-      product: product[0]
+      product: product
     });
   })["catch"](function (err) {
     console.log(err);
