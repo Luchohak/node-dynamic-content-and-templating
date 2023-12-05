@@ -21,7 +21,8 @@ exports.postAddProduct = function (req, res, next) {
     price: price,
     description: description
   }).then(function (result) {
-    console.log(result);
+    console.log('CREATED PRODUCT');
+    res.redirect("/admin/products");
   })["catch"](function (err) {
     console.log(err);
   });
