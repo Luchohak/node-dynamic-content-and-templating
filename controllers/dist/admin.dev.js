@@ -35,7 +35,7 @@ exports.getEditProduct = function (req, res, next) {
   }
 
   var prodId = req.params.productId;
-  Product.findById(prodId, function (product) {
+  Product.findByPk(prodId).then(function (product) {
     if (!product) {
       return res.redirect("/");
     }
@@ -46,6 +46,8 @@ exports.getEditProduct = function (req, res, next) {
       editing: editMode,
       product: product
     });
+  })["catch"](function (err) {
+    console.log(err);
   });
 };
 
@@ -55,24 +57,41 @@ exports.postEditProduct = function (req, res, next) {
   var updatedPrice = req.body.price;
   var updatedImageUrl = req.body.imageUrl;
   var updatedDescription = req.body.description;
-  var updatedProduct = new Product(prodId, updatedTitle, updatedImageUrl, updatedDescription, updatedPrice);
-  updatedProduct.save();
-  res.redirect("/admin/products");
+  Product.findByPk(prodId).then(function (product) {
+    product.title = updatedTitle;
+    product.price = updatedPrice;
+    product.description = updatedDescription;
+    product.imageUrl = updatedImageUrl;
+    return product.save();
+  }).then(function (result) {
+    console.log("UPDATED PRODUCT");
+    res.redirect("/admin/products");
+  })["catch"](function (err) {
+    console.log(err);
+  });
 };
 
 exports.getProducts = function (req, res, next) {
-  Product.fetchAll(function (products) {
+  Product.findAll().then(function (products) {
     res.render("admin/products", {
       pageTitle: "Admin Products",
       path: "/admin/products",
       prods: products,
       activeAdminProducts: true
     });
+  })["catch"](function (err) {
+    console.log(err);
   });
 };
 
 exports.postDeleteProduct = function (req, res, next) {
   var prodId = req.body.productId;
-  Product.deleteById(prodId);
-  res.redirect("/admin/products");
+  Product.findByPk(prodId).then(function (product) {
+    return product.destroy();
+  }).then(function (result) {
+    console.log("PRODUCT DELETED");
+    res.redirect("/admin/products");
+  })["catch"](function (err) {
+    console.log(err);
+  });
 };
