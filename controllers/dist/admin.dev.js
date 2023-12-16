@@ -15,13 +15,13 @@ exports.postAddProduct = function (req, res, next) {
   var imageUrl = req.body.imageUrl;
   var price = req.body.price;
   var description = req.body.description;
-  Product.create({
+  req.user.createProduct({
     title: title,
     imageUrl: imageUrl,
     price: price,
     description: description
   }).then(function (result) {
-    console.log('CREATED PRODUCT');
+    console.log("CREATED PRODUCT");
     res.redirect("/admin/products");
   })["catch"](function (err) {
     console.log(err);
@@ -35,8 +35,15 @@ exports.getEditProduct = function (req, res, next) {
     return res.redirect("/");
   }
 
-  var prodId = req.params.productId;
-  Product.findByPk(prodId).then(function (product) {
+  var prodId = req.params.productId; // Product.findByPk(prodId)
+
+  req.user.getProducts({
+    where: {
+      id: prodId
+    }
+  }).then(function (products) {
+    var product = products[0];
+
     if (!product) {
       return res.redirect("/");
     }
@@ -73,7 +80,8 @@ exports.postEditProduct = function (req, res, next) {
 };
 
 exports.getProducts = function (req, res, next) {
-  Product.findAll().then(function (products) {
+  // Product.findAll()
+  req.user.getProducts().then(function (products) {
     res.render("admin/products", {
       pageTitle: "Admin Products",
       path: "/admin/products",

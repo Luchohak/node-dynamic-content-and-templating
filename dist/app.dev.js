@@ -12,6 +12,10 @@ var Product = require("./models/product");
 
 var User = require("./models/user");
 
+var Cart = require("./models/cart");
+
+var CartItem = require("./models/cart-item");
+
 var app = express();
 app.engine("handlebars", expressHbs({
   layoutsDir: "views/layouts",
@@ -50,8 +54,19 @@ Product.belongsTo(User, {
 }); //would be the same as...
 
 User.hasMany(Product);
-sequelize //.sync({ force: true })
-.sync().then(function (result) {
+User.hasOne(Cart);
+Cart.belongsTo(User);
+Cart.belongsToMany(Product, {
+  through: CartItem
+});
+Product.belongsToMany(Cart, {
+  through: CartItem
+});
+Cart.hasMany(CartItem);
+sequelize.sync({
+  force: true
+}) //.sync()
+.then(function (result) {
   return User.findByPk(1); //console.log(result);
 }).then(function (user) {
   if (!user) {

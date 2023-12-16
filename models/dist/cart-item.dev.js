@@ -4,7 +4,7 @@ var Sequelize = require('sequelize');
 
 var sequelize = require('../util/database');
 
-var Cart = sequelize.define('cart', {
+var CartItem = sequelize.define('cartItem', {
   id: {
     type: Sequelize.INTEGER,
     autoIncrement: true,
@@ -12,4 +12,4 @@ var Cart = sequelize.define('cart', {
     primaryKey: true
   }
 });
-module.exports = Cart;
+module.exports = CartItem;
