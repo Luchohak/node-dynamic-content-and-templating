@@ -38,7 +38,7 @@ app.use(bodyParser.urlencoded({
 app.use(express["static"](path.join(__dirname, "public")));
 app.use(function (req, res, next) {
   User.findByPk(1).then(function (user) {
-    //This will not store a JS Object, instead it is a Sequelize Object that will contain all its utility methods  
+    //This will not store a JS Object, instead it is a Sequelize Object that will contain all its utility methods
     req.user = user;
     next();
   })["catch"](function (err) {
@@ -63,10 +63,8 @@ Product.belongsToMany(Cart, {
   through: CartItem
 });
 Cart.hasMany(CartItem);
-sequelize.sync({
-  force: true
-}) //.sync()
-.then(function (result) {
+sequelize //.sync({ force: true })
+.sync().then(function (result) {
   return User.findByPk(1); //console.log(result);
 }).then(function (user) {
   if (!user) {
@@ -79,7 +77,9 @@ sequelize.sync({
   return user;
 }).then(function (user) {
   //console.log(user);
-  app.listen(3000);
+  return user.createCart();
+}).then(function (cart) {
+  return app.listen(3000);
 })["catch"](function (err) {
   console.log(err);
 });

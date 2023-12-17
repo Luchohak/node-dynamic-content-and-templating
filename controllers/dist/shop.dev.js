@@ -49,59 +49,54 @@ exports.getProduct = function (req, res, next) {
 };
 
 exports.getCart = function (req, res, next) {
-  Cart.getCart(function (cart) {
-    Product.fetchAll(function (products) {
-      var cartProducts = [];
-      var _iteratorNormalCompletion = true;
-      var _didIteratorError = false;
-      var _iteratorError = undefined;
-
-      try {
-        for (var _iterator = products[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-          product = _step.value;
-          var cartProductData = cart.products.find(function (prod) {
-            return prod.id === product.id;
-          });
-
-          if (cartProductData) {
-            cartProducts.push({
-              productData: product,
-              qty: cartProductData.qty
-            });
-          }
-        }
-      } catch (err) {
-        _didIteratorError = true;
-        _iteratorError = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion && _iterator["return"] != null) {
-            _iterator["return"]();
-          }
-        } finally {
-          if (_didIteratorError) {
-            throw _iteratorError;
-          }
-        }
-      }
-
+  req.user.getCart().then(function (cart) {
+    return cart.getProducts().then(function (products) {
       res.render("shop/cart", {
         pageTitle: "Cart",
         path: "/cart",
-        products: cartProducts
+        products: products
       });
-    });
+    })["catch"]();
+  })["catch"](function (err) {
+    return console.log(err);
   });
 };
 
 exports.postCart = function (req, res, next) {
   var prodId = req.body.productId;
-  Product.findById(prodId, function (product) {
-    Cart.addProduct(prodId, product.price);
-  });
-  res.render("shop/cart", {
-    pageTitle: "Cart",
-    path: "/cart"
+  var fetchedCart;
+  req.user.getCart().then(function (cart) {
+    fetchedCart = cart;
+    return cart.getProducts({
+      where: {
+        id: prodId
+      }
+    });
+  }).then(function (products) {
+    var product;
+
+    if (products.length > 0) {
+      product = products[0];
+    }
+
+    var newQuantity = 1;
+
+    if (product) {//...
+    }
+
+    return Product.findByPk(prodId).then(function (product) {
+      return fetchedCart.addProduct(product, {
+        through: {
+          quantity: newQuantity
+        }
+      });
+    })["catch"](function (err) {
+      return console.log(err);
+    });
+  }).then(function () {
+    res.redirect('/cart');
+  })["catch"](function (err) {
+    return console.log(err);
   });
 };
 

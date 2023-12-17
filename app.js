@@ -28,9 +28,9 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use((req, res, next) => {
   User.findByPk(1)
-    .then(user => {
-      //This will not store a JS Object, instead it is a Sequelize Object that will contain all its utility methods  
-      req.user =  user;
+    .then((user) => {
+      //This will not store a JS Object, instead it is a Sequelize Object that will contain all its utility methods
+      req.user = user;
       next();
     })
     .catch((err) => console.log(err));
@@ -44,15 +44,15 @@ app.use(errorController.get404);
 Product.belongsTo(User, { constraints: true, onDelete: "CASCADE" });
 //would be the same as...
 User.hasMany(Product);
-User.hasOne(Cart)
+User.hasOne(Cart);
 Cart.belongsTo(User);
-Cart.belongsToMany(Product, {through: CartItem})
-Product.belongsToMany(Cart, {through: CartItem});
+Cart.belongsToMany(Product, { through: CartItem });
+Product.belongsToMany(Cart, { through: CartItem });
 Cart.hasMany(CartItem);
 
 sequelize
-  .sync({ force: true })
-  //.sync()
+  //.sync({ force: true })
+  .sync()
   .then((result) => {
     return User.findByPk(1);
     //console.log(result);
@@ -65,8 +65,9 @@ sequelize
   })
   .then((user) => {
     //console.log(user);
-    app.listen(3000);
+    return user.createCart();
   })
+  .then((cart) => app.listen(3000))
   .catch((err) => {
     console.log(err);
   });
